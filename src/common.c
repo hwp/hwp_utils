@@ -17,9 +17,6 @@ size_t datatype_size(datatype_t type) {
     case DATATYPE_UINT:
       size = sizeof(unsigned int);
       break;
-    case DATATYPE_FLOAT:
-      size = sizeof(float);
-      break;
     case DATATYPE_DOUBLE:
       size = sizeof(double);
       break;

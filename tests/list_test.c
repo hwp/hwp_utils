@@ -4,22 +4,28 @@
 // Author : Weipeng He <heweipeng@gmail.com>
 // Copyright (c) 2015, All rights reserved.
 
-#include "../src/list.h"
-#include "../src/test.h"
+#include "list_test.h"
 
-void test_alloc(void* param) {
-  darray_t* a = darray_alloc(DATATYPE_INT);
-  H_ASSERT_EQ_INT(darray_size(a), 1);
-  darray_free(a);
-}
+#define DEF_TEST_ALLOC(name, _type) \
+  static void name(list_it* param) { \
+    void* a = param->alloc(_type); \
+    HT_ASSERT(param->type(a) == _type); \
+    HT_ASSERT(param->size(a) == 0); \
+    param->free(a); \
+  }
 
-int main(int argc, char** argv) {
-  h_test_suit_t* suit = h_test_suit_alloc(NULL);
+DEF_TEST_ALLOC(test_alloc_int, DATATYPE_INT)
+DEF_TEST_ALLOC(test_alloc_uint, DATATYPE_UINT)
+DEF_TEST_ALLOC(test_alloc_double, DATATYPE_DOUBLE)
+DEF_TEST_ALLOC(test_alloc_ptr, DATATYPE_PTR)
 
-  h_add_test(suit, test_alloc);
-  int ret = h_run_suit(suit, &H_TEST_DEFAULT_OPTION);
+ht_suit_t* create_list_suit(list_it* param) {
+  ht_suit_t* ret = ht_suit_alloc(param);
 
-  h_test_suit_free(suit);
+  ht_add_test(ret, (ht_test_f) test_alloc_int);
+  ht_add_test(ret, (ht_test_f) test_alloc_uint);
+  ht_add_test(ret, (ht_test_f) test_alloc_double);
+  ht_add_test(ret, (ht_test_f) test_alloc_ptr);
 
   return ret;
 }

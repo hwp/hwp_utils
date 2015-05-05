@@ -15,7 +15,6 @@
 typedef enum {
   DATATYPE_INT,
   DATATYPE_UINT,
-  DATATYPE_FLOAT,
   DATATYPE_DOUBLE,
   DATATYPE_PTR
 } datatype_t;
@@ -30,7 +29,6 @@ size_t datatype_size(datatype_t type);
  */
 #define VOID_TO_INT(x) (*(int*) (x))
 #define VOID_TO_UINT(x) (*(unsigned int*) (x))
-#define VOID_TO_FLOAT(x) (*(float*) (x))
 #define VOID_TO_DOUBLE(x) (*(double*) (x))
 #define VOID_TO_PTR(x, type) (*(type**) (x))
 

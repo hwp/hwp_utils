@@ -10,42 +10,42 @@
 #include <stdio.h>
 #include <assert.h>
 
-h_test_option_t H_TEST_DEFAULT_OPTION = {0, H_TEST_CONTINUE};
+ht_option_t HT_DEFAULT_OPTION = {0, HT_CONTINUE};
 
 static int fail_counter;
-static h_test_option_t* option;
+static ht_option_t* option;
 
-h_test_suit_t* h_test_suit_alloc(void* param) {
-  h_test_suit_t* ret = malloc(sizeof(h_test_suit_t));
+ht_suit_t* ht_suit_alloc(void* param) {
+  ht_suit_t* ret = malloc(sizeof(ht_suit_t));
   assert(ret);
 
   ret->size = 0;
   ret->cap = 10;
   ret->param = param;
 
-  ret->tests = malloc(ret->cap * sizeof(h_test_f));
+  ret->tests = malloc(ret->cap * sizeof(ht_test_f));
   assert(ret->tests);
 
   return ret;
 }
 
-void h_test_suit_free(h_test_suit_t* suit) {
+void ht_suit_free(ht_suit_t* suit) {
   if (suit) {
     free(suit->tests);
     free(suit);
   }
 }
 
-void h_add_test(h_test_suit_t* suit, h_test_f test) {
+void ht_add_test(ht_suit_t* suit, ht_test_f test) {
   if (suit->size == suit->cap) {
     suit->cap *= 2;
-    suit->tests = realloc(suit->tests, suit->cap * sizeof(h_test_f));
+    suit->tests = realloc(suit->tests, suit->cap * sizeof(ht_test_f));
   }
   suit->tests[suit->size] = test;
   suit->size++;
 }
 
-int h_run_suit(h_test_suit_t* suit, h_test_option_t* opt) {
+int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
   fail_counter = 0;
   option = opt;
 
@@ -54,25 +54,21 @@ int h_run_suit(h_test_suit_t* suit, h_test_option_t* opt) {
     suit->tests[i](suit->param);
   }
 
+  if (!opt->silent) {
+    printf("**** %d failed / %d tested ****\n", fail_counter, suit->size);
+  }
+
   return fail_counter;
 }
 
-int h_assert(int expr, char* msg, char* file, int line) {
+int ht_assert(int expr, char* msg, const char* file, unsigned int line) {
   if (!expr) {
     fail_counter++;
     if (!option->silent) {
-      printf("assertion failed at %s:%d\n\t%s\n", file, line, msg);
+      printf("%s:%d: Assertion Failed : %s\n", file, line, msg);
     }
   }
   
   return expr;
 }
 
-/*
-h_assert_eq_int(int x, int y, char* file, int line) {
-  char* msg;
-  asprintf(msg, "expected  ==  ")
-
-    free(msg);
-}
-*/

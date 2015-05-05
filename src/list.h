@@ -43,9 +43,14 @@ datatype_t darray_type(darray_t* obj);
 size_t darray_size(darray_t* obj);
 
 /**
- * add an element to the end 
+ * add an element at the end 
  */
-void darray_add(darray_t* obj, void* elem);
+void darray_push_back(darray_t* obj, void* elem);
+
+/**
+ * get the and delete the element at the end
+ */
+void* darray_pop_back(darray_t* obj);
 
 /**
  * get an element by index

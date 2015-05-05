@@ -45,7 +45,7 @@ static void* offset_bytes(void* ptr, size_t nbytes) {
   return bp + nbytes;
 }
 
-void darray_add(darray_t* obj, void* elem) {
+void darray_push_back(darray_t* obj, void* elem) {
   if (obj->size == obj->cap) {
     obj->cap *= 2;
     obj->data = realloc(obj->data, datatype_size(obj->type) * obj->cap);
@@ -53,6 +53,12 @@ void darray_add(darray_t* obj, void* elem) {
 
   memcpy(darray_get(obj, obj->size), elem, datatype_size(obj->type));
   obj->size++;
+}
+
+void* darray_pop_back(darray_t* obj) {
+  void* ret = darray_get(obj, obj->size - 1);
+  obj->size--;
+  return ret;
 }
 
 void* darray_get(darray_t* obj, size_t index) {
