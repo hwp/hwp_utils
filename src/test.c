@@ -2,7 +2,7 @@
 // Test framework
 //
 // Author : Weipeng He <heweipeng@gmail.com>
-// Distributed under the MIT License.
+// Copyright (c) 2015, All rights reserved.
 
 #include "test.h"
 
@@ -61,11 +61,11 @@ int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
   return fail_counter;
 }
 
-int ht_assert(int expr, char* msg, const char* file, unsigned int line) {
+int ht_assert(int expr, char* msg, const char* file, unsigned int line, const char* name) {
   if (!expr) {
     fail_counter++;
     if (!option->silent) {
-      printf("%s:%d: Assertion Failed : %s\n", file, line, msg);
+      printf("%s (%s:%d): Assertion Failed : %s\n", name, file, line, msg);
     }
   }
   

@@ -7,10 +7,10 @@
 #include "list_test.h"
 
 #define DEF_TEST_ALLOC(name, _type) \
-  static void name(list_it* param) { \
+  HT_TEST(name, list_it*) { \
     void* a = param->alloc(_type); \
     HT_ASSERT(param->type(a) == _type); \
-    HT_ASSERT(param->size(a) == 0); \
+    HT_ASSERT(param->size(a) == 1); \
     param->free(a); \
   }
 

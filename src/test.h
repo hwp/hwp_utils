@@ -2,7 +2,7 @@
 // Test framework
 //
 // Author : Weipeng He <heweipeng@gmail.com>
-// Distributed under the MIT License.
+// Copyright (c) 2015, All rights reserved.
 
 #ifndef TEST_H_
 #define TEST_H_
@@ -30,6 +30,13 @@ ht_option_t HT_DEFAULT_OPTION;
  * test function
  */
 typedef void (*ht_test_f)(void* param);
+
+#define HT_TEST(name, param_type) \
+  static void ht_test_##name(const char* __HT_NAME__, param_type param); \
+  void name(void* param) { \
+    ht_test_##name(#name, param); \
+  } \
+  void ht_test_##name(const char* __HT_NAME__, param_type param)
 
 /**
  * test suite
@@ -64,9 +71,9 @@ void ht_add_test(ht_suit_t* suit, ht_test_f test);
 int ht_run_suit(ht_suit_t* suit, ht_option_t* opt);
 
 #define HT_ASSERT(expr) \
-  ht_assert(expr, #expr, __FILE__, __LINE__)
+  ht_assert(expr, #expr, __FILE__, __LINE__, __HT_NAME__)
 
-int ht_assert(int expr, char* msg, const char* file, unsigned int line);
+int ht_assert(int expr, char* msg, const char* file, unsigned int line, const char* name);
 
 #endif  // TEST_H_
 
