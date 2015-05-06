@@ -10,6 +10,7 @@ int main(int argc, char** argv) {
   list_it param;
   param.alloc = (void* (*)(datatype_t)) darray_alloc;
   param.free = (void (*)(void*)) darray_free;
+  param.freeall = (void (*)(void*, void (*)(void*))) darray_freeall;
   param.type = (datatype_t (*)(void*)) darray_type;
   param.size = (size_t (*)(void*)) darray_size;
   param.push_back = (void (*)(void*, void*)) darray_push_back;

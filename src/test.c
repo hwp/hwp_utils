@@ -59,6 +59,10 @@ int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
   name_ptr = mmap(NULL, sizeof(char) * HT_NAME_MAXLEN, PROT_READ | PROT_WRITE, 
       MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
+  if (option->onfail == HT_DEBUG) {
+    debug_init();
+  }
+
   int i;
   for (i = 0; i < suit->size; i++) {
     child_pid = fork();

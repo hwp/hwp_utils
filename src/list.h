@@ -33,6 +33,11 @@ darray_t* darray_alloc(datatype_t type);
 void darray_free(darray_t* obj);
 
 /**
+ * free a dynamic array and all the elements
+ */
+void darray_freeall(darray_t* obj, void (*free_elem)(void*));
+
+/**
  * element data type
  */
 datatype_t darray_type(darray_t* obj);

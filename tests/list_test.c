@@ -78,12 +78,7 @@ HT_TEST(test_string, list_it*) {
   }
   HT_ASSERT(param->size(l) == LIST_SIZE);
   
-  for (i = 0; i < LIST_SIZE; i++) {
-    char* s = VOID_TO_PTR(param->get(l, i), char);
-    free(s);
-  }
-
-  param->free(l);
+  param->freeall(l, free);
 }
 
 ht_suit_t* create_list_suit(list_it* param) {

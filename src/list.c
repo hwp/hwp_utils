@@ -32,6 +32,15 @@ void darray_free(darray_t* obj) {
   free(obj);
 }
 
+void darray_freeall(darray_t* obj, void (*free_elem)(void*)) {
+  assert(obj->type == DATATYPE_PTR);
+  size_t i;
+  for (i = 0; i < obj->size; i++) {
+    free_elem(VOID_TO_PTR(darray_get(obj, i), void));
+  }
+  darray_free(obj);
+}
+
 datatype_t darray_type(darray_t* obj) {
   return obj->type;
 }
