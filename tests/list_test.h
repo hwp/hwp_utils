@@ -13,7 +13,7 @@
 typedef struct {
   void* (*alloc)(datatype_t type);
   void (*free)(void* obj);
-  void (*freeall)(void* obj, void (*free_elem)(void*));
+  void (*freeall)(void* obj, free_f free_elem);
   datatype_t (*type)(void* obj);
   size_t (*size)(void* obj);
   void (*push_back)(void* obj, void* elem);

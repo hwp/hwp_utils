@@ -1,5 +1,5 @@
 // list.h
-// List data structures
+// list data structures
 //
 // Author : Weipeng He <heweipeng@gmail.com>
 // Copyright (c) 2015, All rights reserved.
@@ -35,7 +35,7 @@ void darray_free(darray_t* obj);
 /**
  * free a dynamic array and all the elements
  */
-void darray_freeall(darray_t* obj, void (*free_elem)(void*));
+void darray_freeall(darray_t* obj, free_f free_elem);
 
 /**
  * element data type

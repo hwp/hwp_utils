@@ -31,3 +31,11 @@ size_t datatype_size(datatype_t type) {
   return size;
 }
 
+int compar_int(const void* a, const void* b, void* param) {
+  return VOID_TO_INT(b) - VOID_TO_INT(a);
+}
+
+int hash_int(void* data, void* param) {
+  return VOID_TO_INT(data);
+}
+

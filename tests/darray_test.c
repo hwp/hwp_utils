@@ -10,7 +10,7 @@ int main(int argc, char** argv) {
   list_it param;
   param.alloc = (void* (*)(datatype_t)) darray_alloc;
   param.free = (void (*)(void*)) darray_free;
-  param.freeall = (void (*)(void*, void (*)(void*))) darray_freeall;
+  param.freeall = (void (*)(void*, free_f)) darray_freeall;
   param.type = (datatype_t (*)(void*)) darray_type;
   param.size = (size_t (*)(void*)) darray_size;
   param.push_back = (void (*)(void*, void*)) darray_push_back;
@@ -23,6 +23,11 @@ int main(int argc, char** argv) {
   int ret = ht_run_suit(suit, &option);
   ht_suit_free(suit);
 
-  return ret;
+  if (ret == 0) {
+    exit(EXIT_SUCCESS);
+  }
+  else {
+    exit(EXIT_FAILURE);
+  }
 }
 

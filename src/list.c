@@ -1,5 +1,5 @@
 // list.c
-// List data structures
+// list data structures
 //
 // Author : Weipeng He <heweipeng@gmail.com>
 // Copyright (c) 2015, All rights reserved.
@@ -12,7 +12,7 @@
 
 /********** dynamic array **********/
 
-#define DARRAY_INIT_CAP 128
+#define DARRAY_INIT_CAP 16
 
 darray_t* darray_alloc(datatype_t type) {
   darray_t* obj = malloc(sizeof(darray_t));
@@ -32,7 +32,7 @@ void darray_free(darray_t* obj) {
   free(obj);
 }
 
-void darray_freeall(darray_t* obj, void (*free_elem)(void*)) {
+void darray_freeall(darray_t* obj, free_f free_elem) {
   assert(obj->type == DATATYPE_PTR);
   size_t i;
   for (i = 0; i < obj->size; i++) {
