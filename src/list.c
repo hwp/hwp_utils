@@ -51,8 +51,8 @@ void darray_push_back(darray_t* obj, void* elem) {
     obj->data = realloc(obj->data, datatype_size(obj->type) * obj->cap);
   }
 
-  memcpy(darray_get(obj, obj->size), elem, datatype_size(obj->type));
   obj->size++;
+  memcpy(darray_get(obj, obj->size - 1), elem, datatype_size(obj->type));
 }
 
 void* darray_pop_back(darray_t* obj) {
@@ -62,7 +62,7 @@ void* darray_pop_back(darray_t* obj) {
 }
 
 void* darray_get(darray_t* obj, size_t index) {
-  assert(index >= 0 && index < obj->cap);
+  assert(index >= 0 && index < obj->size);
   return offset_bytes(obj->data, index * datatype_size(obj->type));
 }
 
