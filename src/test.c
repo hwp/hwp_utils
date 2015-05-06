@@ -8,12 +8,14 @@
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
+#include <string.h>
+#include <sys/mman.h>
+#include <sys/wait.h>
 #include <assert.h>
 
-ht_option_t HT_DEFAULT_OPTION = {0, HT_CONTINUE};
-
-static int fail_counter;
 static ht_option_t* option;
+char* name_ptr;
 
 ht_suit_t* ht_suit_alloc(void* param) {
   ht_suit_t* ret = malloc(sizeof(ht_suit_t));
@@ -46,13 +48,60 @@ void ht_add_test(ht_suit_t* suit, ht_test_f test) {
 }
 
 int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
-  fail_counter = 0;
+  int fail_counter = 0;
   option = opt;
+  pid_t child_pid, wpid;
+  int status;
+  
+  name_ptr = mmap(NULL, sizeof(char) * HT_NAME_MAXLEN, PROT_READ | PROT_WRITE, 
+      MAP_SHARED | MAP_ANONYMOUS, -1, 0);
 
   int i;
   for (i = 0; i < suit->size; i++) {
-    suit->tests[i](suit->param);
+    child_pid = fork();
+    if (child_pid == -1) {
+      perror("fork");
+      exit(EXIT_FAILURE);
+    } 
+    else if (child_pid == 0) { /* This is the child */
+      suit->tests[i](suit->param);
+      exit(EXIT_SUCCESS);
+    }
+    else {                     /* This is the parent */
+      do {
+        wpid = waitpid(child_pid, &status, WUNTRACED);
+        if (wpid == -1) {
+          perror("waitpid");
+          exit(EXIT_FAILURE);
+        }
+
+        if (WIFEXITED(status)) {
+          if (WEXITSTATUS(status) != EXIT_SUCCESS) {
+            fail_counter++;
+          }
+          else {
+            printf("%s: passed\n", __HT_NAME__);
+          }
+        } 
+        else if (WIFSIGNALED(status)) {
+          int sig = WTERMSIG(status);
+          char* desc = strsignal(sig);
+          printf("%s: killed with signal %d: %s\n", __HT_NAME__, sig, desc);
+          fail_counter++;
+        }
+        else if (WIFSTOPPED(status)) {
+          int sig = WSTOPSIG(status);
+          char* desc = strsignal(sig);
+          printf("%s: stopped with signal %d: %s\n", __HT_NAME__, sig, desc);
+        }
+        else {    /* Non-standard case -- may never happen */
+          printf("Unexpected status (0x%x)\n", status);
+        }
+      } while (!WIFEXITED(status) && !WIFSIGNALED(status));
+    }
   }
+
+  munmap(name_ptr, sizeof(char) * HT_NAME_MAXLEN);
 
   if (!opt->silent) {
     printf("**** %d failed / %d tested ****\n", fail_counter, suit->size);
@@ -61,14 +110,21 @@ int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
   return fail_counter;
 }
 
-int ht_assert(int expr, char* msg, const char* file, unsigned int line, const char* name) {
+int ht_assert(int expr, char* msg, const char* file, unsigned int line) {
   if (!expr) {
-    fail_counter++;
     if (!option->silent) {
-      printf("%s (%s:%d): Assertion Failed : %s\n", name, file, line, msg);
+      printf("%s: %s:%d: assertion failed : %s\n", __HT_NAME__, file, line, msg);
+    }
+
+    if (option->onfail == HT_ABORT) {
+      exit(EXIT_FAILURE);
+    }
+    else {
+      // TODO GDB
+      exit(EXIT_FAILURE);
     }
   }
-  
+
   return expr;
 }
 

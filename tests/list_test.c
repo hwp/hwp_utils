@@ -22,10 +22,10 @@ DEF_TEST_ALLOC(test_alloc_ptr, DATATYPE_PTR)
 ht_suit_t* create_list_suit(list_it* param) {
   ht_suit_t* ret = ht_suit_alloc(param);
 
-  ht_add_test(ret, (ht_test_f) test_alloc_int);
-  ht_add_test(ret, (ht_test_f) test_alloc_uint);
-  ht_add_test(ret, (ht_test_f) test_alloc_double);
-  ht_add_test(ret, (ht_test_f) test_alloc_ptr);
+  ht_add_test(ret, test_alloc_int);
+  ht_add_test(ret, test_alloc_uint);
+  ht_add_test(ret, test_alloc_double);
+  ht_add_test(ret, test_alloc_ptr);
 
   return ret;
 }

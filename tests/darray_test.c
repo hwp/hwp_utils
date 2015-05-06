@@ -17,7 +17,8 @@ int main(int argc, char** argv) {
   param.get = (void* (*)(void*, size_t)) darray_get;
 
   ht_suit_t* suit = create_list_suit(&param);
-  int ret = ht_run_suit(suit, &HT_DEFAULT_OPTION);
+  ht_option_t option = HT_DEFAULT_OPTION;
+  int ret = ht_run_suit(suit, &option);
   ht_suit_free(suit);
 
   return ret;
