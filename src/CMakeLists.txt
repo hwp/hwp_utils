@@ -3,5 +3,5 @@
 
 add_library(container_lib STATIC list.c common.c)
 
-add_library(test_lib STATIC test.c)
+add_library(test_lib STATIC test.c debug.c)
 

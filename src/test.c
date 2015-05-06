@@ -6,11 +6,14 @@
 
 #include "test.h"
 
+#include "debug.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/mman.h>
+#include <sys/types.h>
 #include <sys/wait.h>
 #include <assert.h>
 
@@ -120,7 +123,7 @@ int ht_assert(int expr, char* msg, const char* file, unsigned int line) {
       exit(EXIT_FAILURE);
     }
     else {
-      // TODO GDB
+      invoke_gdb();
       exit(EXIT_FAILURE);
     }
   }
