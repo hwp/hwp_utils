@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
   param.freeall = (void (*)(void*, free_f)) darray_freeall;
   param.elem_size = (size_t (*)(void*)) darray_elem_size;
   param.size = (size_t (*)(void*)) darray_size;
-  param.push_back = (void (*)(void*, void*)) darray_push_back;
+  param.push_back = (size_t (*)(void*, void*)) darray_push_back;
   param.pop_back = (void* (*)(void*)) darray_pop_back;
   param.get = (void* (*)(void*, size_t)) darray_get;
 

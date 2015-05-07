@@ -72,7 +72,7 @@ hashmap_t* hashmap_alloc(size_t key_size, size_t value_size,
 /**
  * free memory of a hash map
  */
-void hashmap_free(hashmap_t* obj);
+void hashmap_free(hashmap_t* map);
 
 /**
  * free memory of a hash map and the elements
@@ -80,26 +80,33 @@ void hashmap_free(hashmap_t* obj);
  * if free_key or free_value is NULL, then the space pointed with
  *   the key or the value of the entries will not be freed.
  */
-void hashmap_freeall(hashmap_t* obj, free_f free_key, free_f free_value);
+void hashmap_freeall(hashmap_t* map, free_f free_key, free_f free_value);
 
 /**
  * # of entries
  */
-size_t hashmap_size(hashmap_t* obj);
+size_t hashmap_size(hashmap_t* map);
 
 /**
  * add an entry
  *
  * replace existing entry if the key already exist
  */
-void hashmap_put(hashmap_t* obj, void* key, void* value);
+void hashmap_put(hashmap_t* map, void* key, void* value);
+
+#define HASHMAP_PUT_TYPE(map, ktype, vtype, key, value) \
+  do { \
+    ktype _hwp_util_k = key; \
+    vtype _hwp_util_v = value; \
+    hashmap_put(map, &_hwp_util_k, &_hwp_util_v); \
+  } while (0)
 
 /**
  * get an entry according to key
  *
  * @return NULL if entry not exist
  */
-void* hashmap_get(hashmap_t* obj, void* key);
+void* hashmap_get(hashmap_t* map, void* key);
 
 #endif  // MAP_H_
 

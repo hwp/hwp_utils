@@ -16,7 +16,7 @@ typedef struct {
   void (*freeall)(void* obj, free_f free_elem);
   size_t (*elem_size)(void* obj);
   size_t (*size)(void* obj);
-  void (*push_back)(void* obj, void* elem);
+  size_t (*push_back)(void* obj, void* elem);
   void* (*pop_back)(void* obj);
   void* (*get)(void* obj, size_t index);
 } list_it;

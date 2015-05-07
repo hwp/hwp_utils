@@ -44,38 +44,47 @@ darray_t* darray_alloc(size_t elem_size);
 /**
  * free a dynamic array
  */
-void darray_free(darray_t* obj);
+void darray_free(darray_t* list);
 
 /**
  * free a dynamic array of pointers 
  *   and all the objects the lements point to
  */
-void darray_freeall(darray_t* obj, free_f free_elem);
+void darray_freeall(darray_t* list, free_f free_elem);
 
 /**
  * element size
  */
-size_t darray_elem_size(darray_t* obj);
+size_t darray_elem_size(darray_t* list);
 
 /**
  * number of elements
  */
-size_t darray_size(darray_t* obj);
+size_t darray_size(darray_t* list);
 
 /**
  * add an element at the end 
+ *
+ * @return the index of the new element
  */
-void darray_push_back(darray_t* obj, void* elem);
+size_t darray_push_back(darray_t* list, void* elem);
+
+/**
+ * add an unintialized element at the end
+ *
+ * @return the index of the new element
+ */
+size_t darray_increase_size(darray_t* list);
 
 /**
  * get the and delete the element at the end
  */
-void* darray_pop_back(darray_t* obj);
+void* darray_pop_back(darray_t* list);
 
 /**
  * get an element by index
  */
-void* darray_get(darray_t* obj, size_t index);
+void* darray_get(darray_t* list, size_t index);
 
 #endif
 
