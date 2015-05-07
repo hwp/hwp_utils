@@ -63,7 +63,12 @@ void* darray_pop_back(darray_t* list) {
 
 size_t darray_increase_size(darray_t* list) {
   if (list->size == list->cap) {
-    list->cap *= 2;
+    if (list-> cap <= 0) {
+      list->cap = DARRAY_INIT_CAP;
+    }
+    else {
+      list->cap *= 2;
+    }
     list->data = realloc(list->data, list->elem_size * list->cap);
   }
 

@@ -8,6 +8,7 @@
 #define COMMON_H_
 
 #include <stdlib.h>
+#include <stdint.h>
 
 /**
  * free function
@@ -22,7 +23,7 @@ typedef int (*compar_f)(const void*, const void*, void*);
 /**
  * hash function with parameters
  */
-typedef int (*hash_f)(void* data, void* param);
+typedef uint32_t (*hash_f)(void* data, void* param);
 
 /*
  * conversion macros
@@ -43,9 +44,25 @@ typedef int (*hash_f)(void* data, void* param);
 int compar_int(const void* a, const void* b, void* param);
 
 /**
+ * integer comparison function
+ */
+int compar_double(const void* a, const void* b, void* param);
+
+/**
  * hash function for integer
  */
-int hash_int(void* data, void* param);
+uint32_t hash_int(void* data, void* param);
+
+/**
+ * hash function for double
+ */
+uint32_t hash_double(void* data, void* param);
+
+/**
+ * rotation hash function for binary data
+ * @param size data size (bytes)
+ */
+uint32_t hash_rotate(void* data, size_t* size);
 
 #endif  // COMMON_H_
 

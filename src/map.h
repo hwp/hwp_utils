@@ -10,7 +10,7 @@
 #include "common.h"
 #include "list.h"
 
-#define HASHMAP_DEFAULT_NBINS 2937
+#define HASHMAP_DEFAULT_NBINS 3001
 
 /**
  * hash map

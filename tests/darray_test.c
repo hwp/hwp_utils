@@ -18,8 +18,10 @@ int main(int argc, char** argv) {
   param.get = (void* (*)(void*, size_t)) darray_get;
 
   ht_suit_t* suit = create_list_suit(&param);
-  ht_option_t option = HT_DEFAULT_OPTION;
-  option.onfail = HT_DEBUG;
+  
+  ht_option_t option;
+  ht_get_option(argc, argv, &option);
+  
   int ret = ht_run_suit(suit, &option);
   ht_suit_free(suit);
 

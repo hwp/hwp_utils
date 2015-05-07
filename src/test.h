@@ -81,5 +81,10 @@ int ht_run_suit(ht_suit_t* suit, ht_option_t* opt);
 
 int ht_assert(int expr, char* msg, const char* file, unsigned int line);
 
+/**
+ * get option from args
+ */
+void ht_get_option(int argc, char** argv, ht_option_t* option);
+
 #endif  // TEST_H_
 

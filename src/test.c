@@ -87,22 +87,30 @@ int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
             fail_counter++;
           }
           else {
-            printf("%s: passed\n", __HT_NAME__);
+            if (!option->silent) {
+              printf("%s: passed\n", __HT_NAME__);
+            }
           }
         } 
         else if (WIFSIGNALED(status)) {
           int sig = WTERMSIG(status);
           char* desc = strsignal(sig);
-          printf("%s: killed with signal %d: %s\n", __HT_NAME__, sig, desc);
+          if (!option->silent) {
+            printf("%s: killed with signal %d: %s\n", __HT_NAME__, sig, desc);
+          }
           fail_counter++;
         }
         else if (WIFSTOPPED(status)) {
           int sig = WSTOPSIG(status);
           char* desc = strsignal(sig);
-          printf("%s: stopped with signal %d: %s\n", __HT_NAME__, sig, desc);
+          if (!option->silent) {
+            printf("%s: stopped with signal %d: %s\n", __HT_NAME__, sig, desc);
+          }
         }
         else {    /* Non-standard case -- may never happen */
-          printf("Unexpected status (0x%x)\n", status);
+          if (!option->silent) {
+            printf("Unexpected status (0x%x)\n", status);
+          }
         }
       } while (!WIFEXITED(status) && !WIFSIGNALED(status));
     }
@@ -110,7 +118,7 @@ int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
 
   munmap(name_ptr, sizeof(char) * HT_NAME_MAXLEN);
 
-  if (!opt->silent) {
+  if (!option->silent) {
     printf("**** %d failed / %d tested ****\n", fail_counter, suit->size);
   }
 
@@ -133,5 +141,34 @@ int ht_assert(int expr, char* msg, const char* file, unsigned int line) {
   }
 
   return expr;
+}
+
+void ht_get_option(int argc, char** argv, ht_option_t* option) {
+  ht_option_t def = HT_DEFAULT_OPTION;
+  *option = def;
+
+  int showhelp = 0;
+  int opt;
+  while ((opt = getopt(argc, argv, "sdh")) != -1) {
+    switch (opt) {
+      case 'h':
+        showhelp = 1;
+        break;
+      case 's':
+        option->silent = 1;
+        break;
+      case 'd':
+        option->onfail = HT_DEBUG;
+        break;
+      default:
+        showhelp = 1;
+        break;
+    }
+  }
+
+  if (showhelp) {
+    printf("Usage: %s [-s] [-d]\n\t-s silent mode\n\t-d debug on fail\n", argv[0]);
+    exit(EXIT_FAILURE);   
+  }
 }
 
