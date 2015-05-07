@@ -24,21 +24,6 @@ typedef int (*compar_f)(const void*, const void*, void*);
  */
 typedef int (*hash_f)(void* data, void* param);
 
-/**
- * primitive data types
- */
-typedef enum {
-  DATATYPE_INT,
-  DATATYPE_UINT,
-  DATATYPE_DOUBLE,
-  DATATYPE_PTR
-} datatype_t;
-
-/**
- * get size of the type of data
- */
-size_t datatype_size(datatype_t type);
-
 /*
  * conversion macros
  */
@@ -46,6 +31,11 @@ size_t datatype_size(datatype_t type);
 #define VOID_TO_UINT(x) (*(unsigned int*) (x))
 #define VOID_TO_DOUBLE(x) (*(double*) (x))
 #define VOID_TO_PTR(x, type) (*(type**) (x))
+
+/**
+ * get offset address by bytes
+ */
+#define PTR_OFFSET(ptr, nbytes) ((char*) (ptr) + (nbytes))
 
 /**
  * integer comparison function

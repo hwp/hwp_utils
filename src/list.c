@@ -14,14 +14,14 @@
 
 #define DARRAY_INIT_CAP 16
 
-darray_t* darray_alloc(datatype_t type) {
+darray_t* darray_alloc(size_t elem_size) {
   darray_t* obj = malloc(sizeof(darray_t));
   assert(obj);
 
-  obj->type = type;
+  obj->elem_size = elem_size;
   obj->size = 0;
   obj->cap = DARRAY_INIT_CAP;
-  obj->data = malloc(datatype_size(type) * obj->cap);
+  obj->data = malloc(obj->elem_size * obj->cap);
   assert(obj->data);
 
   return obj;
@@ -33,7 +33,7 @@ void darray_free(darray_t* obj) {
 }
 
 void darray_freeall(darray_t* obj, free_f free_elem) {
-  assert(obj->type == DATATYPE_PTR);
+  assert(obj->elem_size == sizeof(void*));
   size_t i;
   for (i = 0; i < obj->size; i++) {
     free_elem(VOID_TO_PTR(darray_get(obj, i), void));
@@ -41,27 +41,22 @@ void darray_freeall(darray_t* obj, free_f free_elem) {
   darray_free(obj);
 }
 
-datatype_t darray_type(darray_t* obj) {
-  return obj->type;
+size_t darray_elem_size(darray_t* obj) {
+  return obj->elem_size;
 }
 
 size_t darray_size(darray_t* obj) {
   return obj->size;
 }
 
-static void* offset_bytes(void* ptr, size_t nbytes) {
-  char* bp = ptr;
-  return bp + nbytes;
-}
-
 void darray_push_back(darray_t* obj, void* elem) {
   if (obj->size == obj->cap) {
     obj->cap *= 2;
-    obj->data = realloc(obj->data, datatype_size(obj->type) * obj->cap);
+    obj->data = realloc(obj->data, obj->elem_size * obj->cap);
   }
 
   obj->size++;
-  memcpy(darray_get(obj, obj->size - 1), elem, datatype_size(obj->type));
+  memcpy(darray_get(obj, obj->size - 1), elem, obj->elem_size);
 }
 
 void* darray_pop_back(darray_t* obj) {
@@ -72,6 +67,6 @@ void* darray_pop_back(darray_t* obj) {
 
 void* darray_get(darray_t* obj, size_t index) {
   assert(index >= 0 && index < obj->size);
-  return offset_bytes(obj->data, index * datatype_size(obj->type));
+  return PTR_OFFSET(obj->data, index * obj->elem_size);
 }
 

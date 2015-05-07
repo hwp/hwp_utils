@@ -9,21 +9,21 @@
 #include <stdlib.h>
 #include <assert.h>
 
-hashmap_t* hashmap_alloc(datatype_t key_type,
-    datatype_t value_type, size_t nbins, hash_f hash,
-    void* hash_param, compar_f compar_key, void* compar_param) {
+hashmap_t* hashmap_alloc(size_t key_size, size_t value_size,
+    size_t nbins, hash_f hash, void* hash_param,
+    compar_f compar_key, void* compar_param) {
   hashmap_t* ret = malloc(sizeof(hashmap_t));
   assert(ret);
   
-  ret->key_type = key_type;
-  ret->value_type = value_type;
+  ret->key_size = key_size;
+  ret->value_size = value_size;
   ret->nbins = nbins;
   ret->bins = malloc(ret->nbins * sizeof(darray_t*));
   assert(ret->bins);
 
   size_t i;
   for (i = 0; i < ret->nbins; i++) {
-    ret->bins[i] = darray_alloc(DATATYPE_PTR);
+    ret->bins[i] = darray_alloc(key_size + value_size);
   }
 
   ret->size = 0;
@@ -39,7 +39,7 @@ void hashmap_free(hashmap_t* obj) {
   if (obj) {
     size_t i;
     for (i = 0; i < obj->nbins; i++) {
-      darray_freeall(obj->bins[i], free);
+      darray_free(obj->bins[i]);
     }
     free(obj->bins);
     free(obj);

@@ -11,10 +11,10 @@
 #include "../src/test.h"
 
 typedef struct {
-  void* (*alloc)(datatype_t type);
+  void* (*alloc)(size_t elem_size);
   void (*free)(void* obj);
   void (*freeall)(void* obj, free_f free_elem);
-  datatype_t (*type)(void* obj);
+  size_t (*elem_size)(void* obj);
   size_t (*size)(void* obj);
   void (*push_back)(void* obj, void* elem);
   void* (*pop_back)(void* obj);

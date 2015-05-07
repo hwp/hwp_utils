@@ -8,7 +8,8 @@
 #include "../src/test.h"
 
 HT_TEST(test_alloc, void*) {
-  hashmap_t* map = hashmap_alloc(DATATYPE_INT, DATATYPE_INT, HASHMAP_DEFAULT_NBINS, hash_int, NULL, compar_int, NULL);
+  hashmap_t* map = hashmap_alloc(sizeof(int), sizeof(int),
+      HASHMAP_DEFAULT_NBINS, hash_int, NULL, compar_int, NULL);
   HT_ASSERT(hashmap_size(map) == 0);
   hashmap_free(map);
 }

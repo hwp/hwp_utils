@@ -9,23 +9,23 @@
 #include <stdio.h>
 #include <string.h>
 
-#define DEF_TEST_ALLOC(name, _type) \
+#define DEF_TEST_ALLOC(name, type) \
   HT_TEST(name, list_it*) { \
-    void* l = param->alloc(_type); \
-    HT_ASSERT(param->type(l) == _type); \
+    void* l = param->alloc(sizeof(type)); \
+    HT_ASSERT(param->elem_size(l) == sizeof(type)); \
     HT_ASSERT(param->size(l) == 0); \
     param->free(l); \
   }
 
-DEF_TEST_ALLOC(test_alloc_int, DATATYPE_INT)
-DEF_TEST_ALLOC(test_alloc_uint, DATATYPE_UINT)
-DEF_TEST_ALLOC(test_alloc_double, DATATYPE_DOUBLE)
-DEF_TEST_ALLOC(test_alloc_ptr, DATATYPE_PTR)
+DEF_TEST_ALLOC(test_alloc_int, int)
+DEF_TEST_ALLOC(test_alloc_uint, unsigned int)
+DEF_TEST_ALLOC(test_alloc_double, double)
+DEF_TEST_ALLOC(test_alloc_ptr, char*)
 
 #define LIST_SIZE 20000
 
 HT_TEST(test_push_pop, list_it*) {
-  void* l = param->alloc(DATATYPE_INT);
+  void* l = param->alloc(sizeof(int));
   int i = 0;
   for (i = 0; i < LIST_SIZE; i++) {
     int x = i * 2 - 12;
@@ -43,7 +43,7 @@ HT_TEST(test_push_pop, list_it*) {
 }
 
 HT_TEST(test_get, list_it*) {
-  void* l = param->alloc(DATATYPE_DOUBLE);
+  void* l = param->alloc(sizeof(double));
   int i = 0;
   for (i = 0; i < LIST_SIZE; i++) {
     double x = 1.0 / (i + 1);
@@ -61,7 +61,7 @@ HT_TEST(test_get, list_it*) {
 }
 
 HT_TEST(test_string, list_it*) {
-  void* l = param->alloc(DATATYPE_PTR);
+  void* l = param->alloc(sizeof(char*));
   int i = 0;
   for (i = 0; i < LIST_SIZE; i++) {
     char* s = malloc(20 * sizeof(char));

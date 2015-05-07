@@ -17,14 +17,14 @@
  */
 typedef struct {
   /**
-   * key datatype
+   * key size 
    */
-  datatype_t key_type;
+  size_t key_size;
 
   /**
-   * value datatype
+   * value size 
    */
-  datatype_t value_type;
+  size_t value_size;
   
   /**
    * # of bins
@@ -63,19 +63,11 @@ typedef struct {
 } hashmap_t;
 
 /**
- * key value pair
- */
-typedef struct {
-  void* key;
-  void* value;
-} entry_t;
-
-/**
  * create for a hash map
  */
-hashmap_t* hashmap_alloc(datatype_t key_type,
-    datatype_t value_type, size_t nbins, hash_f hash,
-    void* hash_param, compar_f compar_key, void* compar_param);
+hashmap_t* hashmap_alloc(size_t key_size, size_t value_size,
+    size_t nbins, hash_f hash, void* hash_param,
+    compar_f compar_key, void* compar_param);
 
 /**
  * free memory of a hash map

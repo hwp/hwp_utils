@@ -15,17 +15,31 @@
  * dynamic array
  */
 typedef struct {
-  datatype_t type;
+  /**
+   * element size (in bytes)
+   */
+  size_t elem_size;
+
+  /**
+   * # of elements
+   */
   size_t size;
+
+  /**
+   * capacity
+   */
   size_t cap;
 
+  /**
+   * memory for elements
+   */
   void* data;
 } darray_t;
 
 /**
  * allocate a dynamic array
  */
-darray_t* darray_alloc(datatype_t type);
+darray_t* darray_alloc(size_t elem_size);
 
 /**
  * free a dynamic array
@@ -33,14 +47,15 @@ darray_t* darray_alloc(datatype_t type);
 void darray_free(darray_t* obj);
 
 /**
- * free a dynamic array and all the elements
+ * free a dynamic array of pointers 
+ *   and all the objects the lements point to
  */
 void darray_freeall(darray_t* obj, free_f free_elem);
 
 /**
- * element data type
+ * element size
  */
-datatype_t darray_type(darray_t* obj);
+size_t darray_elem_size(darray_t* obj);
 
 /**
  * number of elements
