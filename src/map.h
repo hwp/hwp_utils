@@ -10,7 +10,7 @@
 #include "common.h"
 #include "list.h"
 
-#define HASHMAP_DEFAULT_NBINS 3001
+#define HASHMAP_DEFAULT_NBINS 10007
 
 /**
  * hash map
@@ -37,9 +37,14 @@ typedef struct {
   size_t size;
 
   /**
-   * the bins
+   * the (key) bins
    */
-  darray_t** bins;
+  darray_t** keys;
+
+  /**
+   * the (value) bins
+   */
+  darray_t** values;
 
   /**
    * hash function
@@ -65,22 +70,15 @@ typedef struct {
 /**
  * create for a hash map
  */
-hashmap_t* hashmap_alloc(size_t key_size, size_t value_size,
-    size_t nbins, hash_f hash, void* hash_param,
+hashmap_t* hashmap_alloc(size_t key_size, dup_f key_dup,
+    free_f key_free, size_t value_size, dup_f value_dup,
+    free_f value_free, size_t nbins, hash_f hash, void* hash_param,
     compar_f compar_key, void* compar_param);
 
 /**
  * free memory of a hash map
  */
 void hashmap_free(hashmap_t* map);
-
-/**
- * free memory of a hash map and the elements
- *
- * if free_key or free_value is NULL, then the space pointed with
- *   the key or the value of the entries will not be freed.
- */
-void hashmap_freeall(hashmap_t* map, free_f free_key, free_f free_value);
 
 /**
  * # of entries

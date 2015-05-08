@@ -8,13 +8,13 @@
 
 int main(int argc, char** argv) {
   list_it param;
-  param.alloc = (void* (*)(size_t)) darray_alloc;
-  param.free = (void (*)(void*)) darray_free;
-  param.freeall = (void (*)(void*, free_f)) darray_freeall;
+  param.alloc = (void* (*)(size_t, dup_f, free_f)) darray_alloc;
+  param.free = (free_f) darray_free;
   param.elem_size = (size_t (*)(void*)) darray_elem_size;
   param.size = (size_t (*)(void*)) darray_size;
   param.push_back = (size_t (*)(void*, void*)) darray_push_back;
   param.pop_back = (void* (*)(void*)) darray_pop_back;
+  param.set = (void (*)(void*, size_t, void*)) darray_set;
   param.get = (void* (*)(void*, size_t)) darray_get;
 
   ht_suit_t* suit = create_list_suit(&param);

@@ -6,6 +6,7 @@
 
 #include "common.h"
 
+#include <string.h>
 #include <assert.h>
 
 int compar_int(const void* a, const void* b, void* param) {
@@ -18,21 +19,31 @@ int compar_double(const void* a, const void* b, void* param) {
   return fsign(VOID_TO_DOUBLE(b) - VOID_TO_DOUBLE(a));
 }
 
-uint32_t hash_int(void* data, void* param) {
+int compar_str(const void* a, const void* b, void* param) {
+  return strcmp(VOID_TO_PTR(a, const char), VOID_TO_PTR(b, const char));
+}
+
+uint32_t hash_int(const void* data, void* param) {
   return (uint32_t) VOID_TO_INT(data);
 }
 
-uint32_t hash_double(void* data, void* param) {
+uint32_t hash_double(const void* data, void* param) {
   size_t len = sizeof(double);
   return hash_rotate(data, &len);
 }
 
-uint32_t hash_rotate(void* data, size_t* size) {
+uint32_t hash_str(const void* data, void* param) {
+  const char* str = VOID_TO_PTR(data, const char);
+  size_t len = strlen(str);
+  return hash_rotate(str, &len);
+}
+
+uint32_t hash_rotate(const void* data, size_t* size) {
   uint32_t hash = (uint32_t) *size;
-  char* v = data;
+  const char* v = data;
   size_t i;
   for (i = 0; i < *size; i++) {
-    hash = (hash << 4) ^ (hash >> 28) ^ v[i];
+    hash = ((hash << 5) + hash) + v[i];
   }
   return hash;
 }

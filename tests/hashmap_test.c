@@ -7,16 +7,20 @@
 #include "../src/map.h"
 #include "../src/test.h"
 
+#include <stdio.h>
+
 HT_TEST(test_alloc, void*) {
-  hashmap_t* map = hashmap_alloc(sizeof(int), sizeof(int),
-      HASHMAP_DEFAULT_NBINS, hash_int, NULL, compar_int, NULL);
+  hashmap_t* map = hashmap_alloc(sizeof(int), NULL, NULL,
+      sizeof(int), NULL, NULL, HASHMAP_DEFAULT_NBINS,
+      hash_int, NULL, compar_int, NULL);
   HT_ASSERT(hashmap_size(map) == 0);
   hashmap_free(map);
 }
 
 HT_TEST(test_put, void*) {
-  hashmap_t* map = hashmap_alloc(sizeof(int), sizeof(int),
-      HASHMAP_DEFAULT_NBINS, hash_int, NULL, compar_int, NULL);
+  hashmap_t* map = hashmap_alloc(sizeof(int), NULL, NULL,
+      sizeof(int), NULL, NULL, HASHMAP_DEFAULT_NBINS,
+      hash_int, NULL, compar_int, NULL);
   HASHMAP_PUT_TYPE(map, int, int, 2, 3);
   HASHMAP_PUT_TYPE(map, int, int, 3, 4);
   HASHMAP_PUT_TYPE(map, int, int, 4, 1);
@@ -50,11 +54,12 @@ HT_TEST(test_put, void*) {
   hashmap_free(map);
 }
 
-#define SIZE_OF_MAP 50000
+#define SIZE_OF_MAP 5000
 
 HT_TEST(test_put_int_double, void*) {
-  hashmap_t* map = hashmap_alloc(sizeof(int), sizeof(double),
-      HASHMAP_DEFAULT_NBINS, hash_int, NULL, compar_int, NULL);
+  hashmap_t* map = hashmap_alloc(sizeof(int), NULL, NULL,
+      sizeof(double), NULL, NULL, HASHMAP_DEFAULT_NBINS,
+      hash_int, NULL, compar_int, NULL);
   HT_ASSERT(hashmap_size(map) == 0);
 
   int i;
@@ -86,8 +91,9 @@ HT_TEST(test_put_int_double, void*) {
 }
 
 HT_TEST(test_put_double_int, void*) {
-  hashmap_t* map = hashmap_alloc(sizeof(double), sizeof(int),
-      HASHMAP_DEFAULT_NBINS, hash_double, NULL, compar_double, NULL);
+  hashmap_t* map = hashmap_alloc(sizeof(double), NULL, NULL,
+      sizeof(int), NULL, NULL, HASHMAP_DEFAULT_NBINS,
+      hash_double, NULL, compar_double, NULL);
   HT_ASSERT(hashmap_size(map) == 0);
 
   int i;
@@ -118,6 +124,34 @@ HT_TEST(test_put_double_int, void*) {
   hashmap_free(map);
 }
 
+HT_TEST(test_put_string_int, void*) {
+  hashmap_t* map = hashmap_alloc(sizeof(char*),
+      (dup_f) strdup, free, sizeof(int), NULL, NULL,
+      HASHMAP_DEFAULT_NBINS, hash_str, NULL, compar_str, NULL);
+  HT_ASSERT(hashmap_size(map) == 0);
+
+  int i;
+  char* k = NULL;
+  for (i = 0; i < SIZE_OF_MAP; i++) {
+    asprintf(&k, "key #%d", i);
+    HASHMAP_PUT_TYPE(map, char*, int, k, 5 * i - 3);
+    HT_ASSERT(hashmap_size(map) == i + 1);
+    free(k);
+  }
+
+  HT_ASSERT(hashmap_size(map) == SIZE_OF_MAP);
+
+  for (i = 0; i < SIZE_OF_MAP; i++) {
+    asprintf(&k, "key #%d", i);
+    void* v = hashmap_get(map, &k);
+    HT_ASSERT(v != NULL);
+    HT_ASSERT(VOID_TO_INT(v) == 5 * i - 3);
+    free(k);
+  }
+
+  hashmap_free(map);
+}
+
 int main(int argc, char** argv) {
   ht_suit_t* suit = ht_suit_alloc(NULL); 
 
@@ -128,6 +162,7 @@ int main(int argc, char** argv) {
   ht_add_test(suit, test_put);
   ht_add_test(suit, test_put_int_double);
   ht_add_test(suit, test_put_double_int);
+  ht_add_test(suit, test_put_string_int);
 
   int ret = ht_run_suit(suit, &option);
   ht_suit_free(suit);

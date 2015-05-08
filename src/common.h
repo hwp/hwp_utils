@@ -16,6 +16,11 @@
 typedef void (*free_f)(void*);
 
 /**
+ * duplicate function
+ */
+typedef void* (*dup_f)(const void*);
+
+/**
  * compare function of two objects with parameters
  */
 typedef int (*compar_f)(const void*, const void*, void*);
@@ -23,7 +28,7 @@ typedef int (*compar_f)(const void*, const void*, void*);
 /**
  * hash function with parameters
  */
-typedef uint32_t (*hash_f)(void* data, void* param);
+typedef uint32_t (*hash_f)(const void* data, void* param);
 
 /*
  * conversion macros
@@ -49,20 +54,30 @@ int compar_int(const void* a, const void* b, void* param);
 int compar_double(const void* a, const void* b, void* param);
 
 /**
+ * string (char*) comparison function
+ */
+int compar_str(const void* a, const void* b, void* param);
+
+/**
  * hash function for integer
  */
-uint32_t hash_int(void* data, void* param);
+uint32_t hash_int(const void* data, void* param);
 
 /**
  * hash function for double
  */
-uint32_t hash_double(void* data, void* param);
+uint32_t hash_double(const void* data, void* param);
+
+/**
+ * hash function for string (char*)
+ */
+uint32_t hash_str(const void* data, void* param);
 
 /**
  * rotation hash function for binary data
  * @param size data size (bytes)
  */
-uint32_t hash_rotate(void* data, size_t* size);
+uint32_t hash_rotate(const void* data, size_t* size);
 
 #endif  // COMMON_H_
 

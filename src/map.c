@@ -6,18 +6,14 @@
 
 #include "map.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
 
-#define HASHMAP_ADDR_KEY(map, ibin, ielem) \
-  darray_get((map)->bins[ibin], ielem)
-
-#define HASHMAP_ADDR_VALUE(map, ibin, ielem) \
-  PTR_OFFSET(darray_get((map)->bins[ibin], ielem), (map)->key_size)
-
-hashmap_t* hashmap_alloc(size_t key_size, size_t value_size,
-    size_t nbins, hash_f hash, void* hash_param,
+hashmap_t* hashmap_alloc(size_t key_size, dup_f key_dup,
+    free_f key_free, size_t value_size, dup_f value_dup,
+    free_f value_free, size_t nbins, hash_f hash, void* hash_param,
     compar_f compar_key, void* compar_param) {
   hashmap_t* ret = malloc(sizeof(hashmap_t));
   assert(ret);
@@ -25,12 +21,14 @@ hashmap_t* hashmap_alloc(size_t key_size, size_t value_size,
   ret->key_size = key_size;
   ret->value_size = value_size;
   ret->nbins = nbins;
-  ret->bins = malloc(ret->nbins * sizeof(darray_t*));
-  assert(ret->bins);
+  ret->keys = malloc(ret->nbins * sizeof(darray_t*));
+  ret->values = malloc(ret->nbins * sizeof(darray_t*));
+  assert(ret->keys && ret->values);
 
   size_t i;
   for (i = 0; i < ret->nbins; i++) {
-    ret->bins[i] = darray_alloc(key_size + value_size);
+    ret->keys[i] = darray_alloc(key_size, key_dup, key_free);
+    ret->values[i] = darray_alloc(value_size, value_dup, value_free);
   }
 
   ret->size = 0;
@@ -46,15 +44,13 @@ void hashmap_free(hashmap_t* map) {
   if (map) {
     size_t i;
     for (i = 0; i < map->nbins; i++) {
-      darray_free(map->bins[i]);
+      darray_free(map->keys[i]);
+      darray_free(map->values[i]);
     }
-    free(map->bins);
+    free(map->keys);
+    free(map->values);
     free(map);
   }
-}
-
-void hashmap_freeall(hashmap_t* map, free_f free_key, free_f free_value) {
-  // TODO
 }
 
 size_t hashmap_size(hashmap_t* map) {
@@ -63,9 +59,10 @@ size_t hashmap_size(hashmap_t* map) {
 
 static void hashmap_search(hashmap_t* map, void* key, size_t* ibin, size_t* ielem, int* found) {
   *ibin = (size_t) map->hash(key, map->hash_param) % map->nbins;
-  size_t bin_size = darray_size(map->bins[*ibin]);
+  darray_t* kbin = map->keys[*ibin];
+  size_t bin_size = darray_size(kbin);
   for (*ielem = 0; *ielem < bin_size; (*ielem)++) {
-    if (map->compar_key(HASHMAP_ADDR_KEY(map, *ibin, *ielem),
+    if (map->compar_key(darray_get(kbin, *ielem),
           key, map->compar_param) == 0) {
       break;
     }
@@ -81,12 +78,14 @@ void hashmap_put(hashmap_t* map, void* key, void* value) {
   hashmap_search(map, key, &ibin, &ielem, &found);
 
   if (found) {      // key exist, replace
-    memcpy(HASHMAP_ADDR_VALUE(map, ibin, ielem), value, map->value_size);
+    darray_set(map->values[ibin], ielem, value);
   }
   else {            // new key, add
-    ielem = darray_increase_size(map->bins[ibin]);
-    memcpy(HASHMAP_ADDR_KEY(map, ibin, ielem), key, map->key_size);
-    memcpy(HASHMAP_ADDR_VALUE(map, ibin, ielem), value, map->value_size);
+    if (darray_size(map->keys[ibin]) > 0) {
+      printf("collision!\n");
+    }
+    darray_push_back(map->keys[ibin], key);
+    darray_push_back(map->values[ibin], value);
     map->size++;
   }
 }
@@ -98,7 +97,7 @@ void* hashmap_get(hashmap_t* map, void* key) {
   hashmap_search(map, key, &ibin, &ielem, &found);
 
   if (found) {
-    return HASHMAP_ADDR_VALUE(map, ibin, ielem);
+    return darray_get(map->values[ibin], ielem);
   }
   else {
     return NULL;
