@@ -36,6 +36,8 @@ typedef uint32_t (*hash_f)(const void* data, void* param);
 #define VOID_TO_INT(x) (*(int*) (x))
 #define VOID_TO_UINT(x) (*(unsigned int*) (x))
 #define VOID_TO_DOUBLE(x) (*(double*) (x))
+#define VOID_TO_WCHAR(x) (*(wchar_t*) (x))
+#define VOID_TO_TYPE(x, type) (*(type*) (x))
 #define VOID_TO_PTR(x, type) (*(type**) (x))
 
 /**
@@ -59,6 +61,11 @@ int compar_double(const void* a, const void* b, void* param);
 int compar_str(const void* a, const void* b, void* param);
 
 /**
+ * wide char comparison function
+ */
+int compar_wchar(const void* a, const void* b, void* param);
+
+/**
  * hash function for integer
  */
 uint32_t hash_int(const void* data, void* param);
@@ -72,6 +79,11 @@ uint32_t hash_double(const void* data, void* param);
  * hash function for string (char*)
  */
 uint32_t hash_str(const void* data, void* param);
+
+/**
+ * hash function for wide char
+ */
+uint32_t hash_wchar(const void* data, void* param);
 
 /**
  * rotation hash function for binary data

@@ -106,5 +106,17 @@ void hashmap_put(hashmap_t* map, void* key, void* value);
  */
 void* hashmap_get(hashmap_t* map, void* key);
 
+#define HASHMAP_FOR(map, ktype, key, vtype, value) \
+  { \
+    int _hwp_util_i, _hwp_util_j; \
+    for (_hwp_util_i = 0; _hwp_util_i < map->nbins; _hwp_util_i++) { \
+      darray_t* _hwp_util_k = map->keys[_hwp_util_i]; \
+      darray_t* _hwp_util_v = map->values[_hwp_util_i]; \
+      for (_hwp_util_j = 0; _hwp_util_j < darray_size(_hwp_util_k); _hwp_util_j++) { \
+        ktype key = VOID_TO_TYPE(darray_get(_hwp_util_k, _hwp_util_j), ktype); \
+        vtype value = VOID_TO_TYPE(darray_get(_hwp_util_v, _hwp_util_j), vtype);
+
+#define HASHMAP_ENDFOR } } }
+
 #endif  // MAP_H_
 
