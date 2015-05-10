@@ -65,6 +65,8 @@ int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
 
   int i;
   for (i = 0; i < suit->size; i++) {
+    fflush(stdout);
+    fflush(stderr);
     child_pid = fork();
     if (child_pid == -1) {
       perror("fork");
@@ -72,7 +74,9 @@ int ht_run_suit(ht_suit_t* suit, ht_option_t* opt) {
     } 
     else if (child_pid == 0) { /* This is the child */
       suit->tests[i](suit->param);
-      exit(EXIT_SUCCESS);
+      fflush(stdout);
+      fflush(stderr);
+      _exit(EXIT_SUCCESS);
     }
     else {                     /* This is the parent */
       do {

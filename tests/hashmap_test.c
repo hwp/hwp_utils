@@ -54,7 +54,7 @@ HT_TEST(test_put, void*) {
   hashmap_free(map);
 }
 
-#define SIZE_OF_MAP 5000
+#define SIZE_OF_MAP 2000
 
 HT_TEST(test_put_int_double, void*) {
   hashmap_t* map = hashmap_alloc(sizeof(int), NULL, NULL,

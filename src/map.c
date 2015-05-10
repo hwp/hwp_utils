@@ -6,7 +6,6 @@
 
 #include "map.h"
 
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
@@ -81,9 +80,6 @@ void hashmap_put(hashmap_t* map, void* key, void* value) {
     darray_set(map->values[ibin], ielem, value);
   }
   else {            // new key, add
-    if (darray_size(map->keys[ibin]) > 0) {
-      printf("collision!\n");
-    }
     darray_push_back(map->keys[ibin], key);
     darray_push_back(map->values[ibin], value);
     map->size++;
