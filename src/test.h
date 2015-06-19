@@ -4,8 +4,8 @@
 // Author : Weipeng He <heweipeng@gmail.com>
 // Copyright (c) 2015, All rights reserved.
 
-#ifndef TEST_H_
-#define TEST_H_
+#ifndef HWP_UTIL_TEST_H_
+#define HWP_UTIL_TEST_H_
 
 #include <string.h>
 
@@ -86,5 +86,5 @@ int ht_assert(int expr, char* msg, const char* file, unsigned int line);
  */
 void ht_get_option(int argc, char** argv, ht_option_t* option);
 
-#endif  // TEST_H_
+#endif  // HWP_UTIL_TEST_H_
 

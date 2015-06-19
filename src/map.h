@@ -4,8 +4,8 @@
 // Author : Weipeng He <heweipeng@gmail.com>
 // Copyright (c) 2015, All rights reserved.
 
-#ifndef MAP_H_
-#define MAP_H_
+#ifndef HWP_UTIL_MAP_H_
+#define HWP_UTIL_MAP_H_
 
 #include "common.h"
 #include "list.h"
@@ -118,5 +118,5 @@ void* hashmap_get(hashmap_t* map, void* key);
 
 #define HASHMAP_ENDFOR } } }
 
-#endif  // MAP_H_
+#endif  // HWP_UTIL_MAP_H_
 

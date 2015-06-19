@@ -4,8 +4,8 @@
 // Author : Weipeng He <heweipeng@gmail.com>
 // Copyright (c) 2015, All rights reserved.
 
-#ifndef COMMON_H_
-#define COMMON_H_
+#ifndef HWP_UTIL_COMMON_H_
+#define HWP_UTIL_COMMON_H_
 
 #include <stdlib.h>
 #include <stdint.h>
@@ -91,5 +91,5 @@ uint32_t hash_wchar(const void* data, void* param);
  */
 uint32_t hash_rotate(const void* data, size_t* size);
 
-#endif  // COMMON_H_
+#endif  // HWP_UTIL_COMMON_H_
 

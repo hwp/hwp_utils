@@ -4,8 +4,8 @@
 // Author : Weipeng He <heweipeng@gmail.com>
 // Copyright (c) 2015, All rights reserved.
 
-#ifndef LIST_H_
-#define LIST_H_
+#ifndef HWP_UTIL_LIST_H_
+#define HWP_UTIL_LIST_H_
 
 #include "common.h"
 
