@@ -56,11 +56,15 @@ typedef struct {
  * @param elem_size size of element (bytes)
  * @param elem_dup 
  *   if not NULL duplicate pointer and its data 
- *     when darray_push_back() called 
+ *     when adding or setting elements, namely when
+ *     darray_push_back() and darray_set() are called.
  * @param elem_free 
  *   if not NULL free pointer data when darray_free() called
- * @note elem_dup and elem_free are necessary only when
- *   elements are data pointers
+ * @note elem_dup is necessary only when elements are
+ *    data pointers and hard copied are required.
+ * @note elem_free should be provided as long as elem_dup
+ *    is not NULL or the list takes the ownership of the
+ *    data.
  */
 darray_t* darray_alloc(size_t elem_size, dup_f elem_dup,
     free_f elem_free);

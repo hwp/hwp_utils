@@ -68,7 +68,25 @@ typedef struct {
 } hashmap_t;
 
 /**
- * create for a hash map
+ * allocate a hash map
+ *
+ * @param key_size size of the key (bytes)
+ * @param key_dup 
+ *   if not NULL duplicate key data when adding elements,
+ *     namely when hashmap_put() is called and the key is
+ *     new.
+ * @param key_free
+ *   if not NULL free key data when hashmap_free() is called.
+ * @param value_size size of the value (bytes)
+ * @param value_dup 
+ *   if not NULL duplicate value data when adding elements.
+ * @param value_free
+ *   if not NULL free value data when hashmap_free() is 
+ *   called or existing key-value pair is changed.
+ * @param nbins number of bins, use HASHMAP_DEFAULT_NBINS
+ *   as default.
+ * @param hash hash function for the key
+ * @param hash_param the parameter for the hash function
  */
 hashmap_t* hashmap_alloc(size_t key_size, dup_f key_dup,
     free_f key_free, size_t value_size, dup_f value_dup,
