@@ -28,6 +28,10 @@ int compar_wchar(const void* a, const void* b, void* param) {
   return VOID_TO_WCHAR(b) - VOID_TO_WCHAR(a);
 }
 
+int compar_wcstr(const void* a, const void* b, void* param) {
+  return wcscmp(VOID_TO_PTR(a, const wchar_t), VOID_TO_PTR(b, const wchar_t));
+}
+
 uint32_t hash_int(const void* data, void* param) {
   return (uint32_t) VOID_TO_INT(data);
 }
@@ -45,6 +49,12 @@ uint32_t hash_str(const void* data, void* param) {
 
 uint32_t hash_wchar(const void* data, void* param) {
   return (uint32_t) VOID_TO_WCHAR(data);
+}
+
+uint32_t hash_wcstr(const void* data, void* param) {
+  const wchar_t* str = VOID_TO_PTR(data, const wchar_t);
+  size_t len = wcslen(str) * sizeof(wchar_t);
+  return hash_rotate(str, &len);
 }
 
 uint32_t hash_rotate(const void* data, size_t* size) {

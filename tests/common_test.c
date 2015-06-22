@@ -8,6 +8,7 @@
 #include "../src/test.h"
 
 #include <stdio.h>
+#include <wchar.h>
 
 HT_TEST(test_hash_str, void*) {
   char* buf1 = NULL;
@@ -41,6 +42,36 @@ HT_TEST(test_compar_str, void*) {
   free(buf2);
 }
 
+HT_TEST(test_hash_wcstr, void*) {
+  wchar_t buf1[21];
+  wchar_t buf2[21];
+  wchar_t* t1 = buf1;
+  wchar_t* t2 = buf2;
+  int i;
+  for (i = 0; i < 40; i++) {
+    swprintf(buf1, 20, L"key #%d", i);
+    swprintf(buf2, 20, L"key #%d", i);
+    HT_ASSERT(hash_wcstr(&t1, NULL) == hash_wcstr(&t2, NULL));
+  }
+}
+
+HT_TEST(test_compar_wcstr, void*) {
+  wchar_t buf1[21];
+  wchar_t buf2[21];
+  wchar_t* t1 = buf1;
+  wchar_t* t2 = buf2;
+  int i;
+  for (i = 0; i < 40; i++) {
+    swprintf(buf1, 20, L"key #%d", i);
+    swprintf(buf2, 20, L"key #%d", i);
+    HT_ASSERT(compar_str(&t1, &t2, NULL) == 0);
+  }
+
+  swprintf(buf1, 20, L"a");
+  swprintf(buf2, 20, L"b");
+  HT_ASSERT(compar_str(&t1, &t2, NULL) < 0);
+}
+
 int main(int argc, char** argv) {
   ht_suit_t* suit = ht_suit_alloc(NULL); 
 
@@ -49,6 +80,8 @@ int main(int argc, char** argv) {
 
   ht_add_test(suit, test_hash_str);
   ht_add_test(suit, test_compar_str);
+  ht_add_test(suit, test_hash_wcstr);
+  ht_add_test(suit, test_compar_wcstr);
 
   int ret = ht_run_suit(suit, &option);
   ht_suit_free(suit);

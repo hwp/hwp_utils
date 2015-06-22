@@ -66,6 +66,11 @@ int compar_str(const void* a, const void* b, void* param);
 int compar_wchar(const void* a, const void* b, void* param);
 
 /**
+ * wide char string (wchar_t*) comparison function
+ */
+int compar_wcstr(const void* a, const void* b, void* param);
+
+/**
  * hash function for integer
  */
 uint32_t hash_int(const void* data, void* param);
@@ -81,9 +86,14 @@ uint32_t hash_double(const void* data, void* param);
 uint32_t hash_str(const void* data, void* param);
 
 /**
- * hash function for wide char
+ * hash function for wide char (wchar_t)
  */
 uint32_t hash_wchar(const void* data, void* param);
+
+/**
+ * hash function for wide char string (wchar_t*)
+ */
+uint32_t hash_wcstr(const void* data, void* param);
 
 /**
  * rotation hash function for binary data
