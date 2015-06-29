@@ -64,12 +64,24 @@ HT_TEST(test_compar_wcstr, void*) {
   for (i = 0; i < 40; i++) {
     swprintf(buf1, 20, L"key #%d", i);
     swprintf(buf2, 20, L"key #%d", i);
-    HT_ASSERT(compar_str(&t1, &t2, NULL) == 0);
+    HT_ASSERT(compar_wcstr(&t1, &t2, NULL) == 0);
   }
 
   swprintf(buf1, 20, L"a");
   swprintf(buf2, 20, L"b");
-  HT_ASSERT(compar_str(&t1, &t2, NULL) < 0);
+  HT_ASSERT(compar_wcstr(&t1, &t2, NULL) < 0);
+
+  swprintf(buf1, 20, L"计");
+  swprintf(buf2, 20, L"军");
+  HT_ASSERT(compar_wcstr(&t1, &t2, NULL) != 0);
+
+  swprintf(buf1, 20, L"军");
+  swprintf(buf2, 20, L"军");
+  HT_ASSERT(compar_wcstr(&t1, &t2, NULL) == 0);
+
+  swprintf(buf1, 20, L"a");
+  swprintf(buf2, 20, L"ä");
+  HT_ASSERT(compar_wcstr(&t1, &t2, NULL) != 0);
 }
 
 int main(int argc, char** argv) {
