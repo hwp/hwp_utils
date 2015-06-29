@@ -8,6 +8,7 @@
 #include "../src/test.h"
 
 #include <stdio.h>
+#include <wchar.h>
 
 HT_TEST(test_alloc, void*) {
   hashmap_t* map = hashmap_alloc(sizeof(int), NULL, NULL,
@@ -152,6 +153,50 @@ HT_TEST(test_put_string_int, void*) {
   hashmap_free(map);
 }
 
+HT_TEST(test_put_wcstr_int, void*) {
+  hashmap_t* map = hashmap_alloc(sizeof(char*),
+      (dup_f) wcsdup, free, sizeof(int), NULL, NULL,
+      HASHMAP_DEFAULT_NBINS, hash_wcstr, NULL, compar_wcstr, NULL);
+  HT_ASSERT(hashmap_size(map) == 0);
+
+  wchar_t buf[21];
+  wchar_t* t = buf;
+  void* v;
+  int i;
+  for (i = 0; i < SIZE_OF_MAP; i++) {
+    swprintf(t, 20, L"Hagenbecktraße %d", i);
+    HASHMAP_PUT_TYPE(map, wchar_t*, int, t, 5 * i - 3);
+    HT_ASSERT(hashmap_size(map) == i + 1);
+  }
+
+  HT_ASSERT(hashmap_size(map) == SIZE_OF_MAP);
+
+  for (i = 0; i < SIZE_OF_MAP; i++) {
+    swprintf(t, 20, L"Hagenbecktraße %d", i);
+    v = hashmap_get(map, &t);
+    HT_ASSERT(v != NULL);
+    HT_ASSERT(VOID_TO_INT(v) == 5 * i - 3);
+  }
+
+  swprintf(t, 20, L"计");
+  v = hashmap_get(map, &t);
+  HT_ASSERT(v == NULL);
+  HASHMAP_PUT_TYPE(map, wchar_t*, int, t, 12);
+  HT_ASSERT(hashmap_size(map) == SIZE_OF_MAP + 1);
+  v = hashmap_get(map, &t);
+  HT_ASSERT(v != NULL);
+
+  swprintf(t, 20, L"军");
+  v = hashmap_get(map, &t);
+  HT_ASSERT(v == NULL);
+  HASHMAP_PUT_TYPE(map, wchar_t*, int, t, 21);
+  HT_ASSERT(hashmap_size(map) == SIZE_OF_MAP + 2);
+  v = hashmap_get(map, &t);
+  HT_ASSERT(v != NULL);
+
+  hashmap_free(map);
+}
+
 int main(int argc, char** argv) {
   ht_suit_t* suit = ht_suit_alloc(NULL); 
 
@@ -163,6 +208,7 @@ int main(int argc, char** argv) {
   ht_add_test(suit, test_put_int_double);
   ht_add_test(suit, test_put_double_int);
   ht_add_test(suit, test_put_string_int);
+  ht_add_test(suit, test_put_wcstr_int);
 
   int ret = ht_run_suit(suit, &option);
   ht_suit_free(suit);
