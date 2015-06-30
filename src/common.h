@@ -9,6 +9,7 @@
 
 #include <stdlib.h>
 #include <stdint.h>
+#include <wchar.h>
 
 /**
  * free function
@@ -100,6 +101,20 @@ uint32_t hash_wcstr(const void* data, void* param);
  * @param size data size (bytes)
  */
 uint32_t hash_rotate(const void* data, size_t* size);
+
+/**
+ * escape special characters in the string for printing
+ *
+ * @return the escaped string, should be freed using free()
+ */
+char* escape_str(char* str);
+
+/**
+ * escape special characters in the wide string for printing
+ *
+ * @return the escaped string, should be freed using free()
+ */
+wchar_t* escape_wcstr(wchar_t* str);
 
 #endif  // HWP_UTIL_COMMON_H_
 

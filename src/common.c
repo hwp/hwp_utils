@@ -67,3 +67,95 @@ uint32_t hash_rotate(const void* data, size_t* size) {
   return hash;
 }
 
+char* escape_str(char* str) {
+  size_t len = strlen(str);
+  char* buf = malloc(len * 2 + 1);
+  char* p = buf;
+  char c;
+
+  while ((c = *(str++)) != '\0') {
+    switch (c) {
+      case '\n':
+        *(p++) = '\\';
+        *(p++) = 'n';
+        break;
+      case '\r':
+        *(p++) = '\\';
+        *(p++) = 'r';
+        break;
+      case '\a':
+        *(p++) = '\\';
+        *(p++) = 'a';
+        break;
+      case '\v':
+        *(p++) = '\\';
+        *(p++) = 'v';
+        break;
+      case '\t':
+        *(p++) = '\\';
+        *(p++) = 't';
+        break;
+      case '\f':
+        *(p++) = '\\';
+        *(p++) = 'f';
+        break;
+      case '\b':
+        *(p++) = '\\';
+        *(p++) = 'b';
+        break;
+      default:
+        *(p++) = c;
+        break;
+    }
+  }
+  
+  *p = '\0';
+  return buf;
+}
+
+wchar_t* escape_wcstr(wchar_t* str) {
+  size_t len = wcslen(str);
+  wchar_t* buf = malloc(sizeof(wchar_t) * (len * 2 + 1));
+  wchar_t* p = buf;
+  wchar_t c;
+
+  while ((c = *(str++)) != L'\0') {
+    switch (c) {
+      case L'\n':
+        *(p++) = L'\\';
+        *(p++) = L'n';
+        break;
+      case L'\r':
+        *(p++) = L'\\';
+        *(p++) = L'r';
+        break;
+      case L'\a':
+        *(p++) = L'\\';
+        *(p++) = L'a';
+        break;
+      case L'\v':
+        *(p++) = L'\\';
+        *(p++) = L'v';
+        break;
+      case L'\t':
+        *(p++) = L'\\';
+        *(p++) = L't';
+        break;
+      case L'\f':
+        *(p++) = L'\\';
+        *(p++) = L'f';
+        break;
+      case L'\b':
+        *(p++) = L'\\';
+        *(p++) = L'b';
+        break;
+      default:
+        *(p++) = c;
+        break;
+    }
+  }
+  
+  *p = L'\0';
+  return buf;
+}
+
