@@ -24,9 +24,8 @@ darray_t* darray_alloc(size_t elem_size, dup_f elem_dup,
 
   list->elem_size = elem_size;
   list->size = 0;
-  list->cap = DARRAY_INIT_CAP;
-  list->data = calloc(list->cap, list->elem_size);
-  assert(list->data);
+  list->cap = 0;
+  list->data = NULL;
 
   list->elem_dup = elem_dup;
   list->elem_free = elem_free;
@@ -59,7 +58,7 @@ size_t darray_size(darray_t* list) {
 
 static size_t darray_increase_size(darray_t* list) {
   if (list->size == list->cap) {
-    if (list-> cap <= 0) {
+    if (list->cap <= 0) {
       list->cap = DARRAY_INIT_CAP;
     }
     else {
@@ -67,7 +66,7 @@ static size_t darray_increase_size(darray_t* list) {
     }
     list->data = realloc(list->data, list->elem_size * list->cap);
     memset(PTR_OFFSET(list->data, list->size * list->elem_size),
-        0, list->size * list->elem_size);
+        0, (list->cap - list->size) * list->elem_size);
   }
 
   size_t inew = list->size;
@@ -88,6 +87,7 @@ void* darray_pop_back(darray_t* list) {
 }
 
 void darray_set(darray_t* list, size_t index, void* elem) {
+  assert(index >= 0 && index < list->size);
   void** ptr = darray_get(list, index);
 
   if (list->elem_free && *ptr) {

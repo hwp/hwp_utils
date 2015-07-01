@@ -197,6 +197,36 @@ HT_TEST(test_put_wcstr_int, void*) {
   hashmap_free(map);
 }
 
+HT_TEST(test_for, void*) {
+  hashmap_t* map = hashmap_alloc(sizeof(char*),
+      (dup_f) strdup, free, sizeof(int), NULL, NULL,
+      HASHMAP_DEFAULT_NBINS, hash_str, NULL, compar_str, NULL);
+  HT_ASSERT(hashmap_size(map) == 0);
+
+  int i;
+  char* k = NULL;
+  for (i = 0; i < SIZE_OF_MAP; i++) {
+    asprintf(&k, "key #%d", i);
+    HASHMAP_PUT_TYPE(map, char*, int, k, 5 * i - 3);
+    HT_ASSERT(hashmap_size(map) == i + 1);
+    free(k);
+  }
+
+  HT_ASSERT(hashmap_size(map) == SIZE_OF_MAP);
+
+  int n = 0;
+  HASHMAP_FOR (map, char*, key, int, value) {
+    sscanf(key, "key #%d", &i);
+    HT_ASSERT(value == 5 * i - 3);
+    n++;
+  } HASHMAP_ENDFOR
+
+  HT_ASSERT(n == SIZE_OF_MAP);
+  HT_ASSERT(hashmap_size(map) == SIZE_OF_MAP);
+ 
+  hashmap_free(map);
+}
+
 int main(int argc, char** argv) {
   ht_suit_t* suit = ht_suit_alloc(NULL); 
 
@@ -209,6 +239,7 @@ int main(int argc, char** argv) {
   ht_add_test(suit, test_put_double_int);
   ht_add_test(suit, test_put_string_int);
   ht_add_test(suit, test_put_wcstr_int);
+  ht_add_test(suit, test_for);
 
   int ret = ht_run_suit(suit, &option);
   ht_suit_free(suit);

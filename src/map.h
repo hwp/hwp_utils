@@ -42,9 +42,29 @@ typedef struct {
   darray_t** keys;
 
   /**
+   * duplication function of key
+   */
+  dup_f key_dup;
+
+  /**
+   * free function of key
+   */
+  free_f key_free;
+
+  /**
    * the (value) bins
    */
   darray_t** values;
+
+  /**
+   * duplication function of value
+   */
+  dup_f value_dup;
+
+  /**
+   * free function of value
+   */
+  free_f value_free;
 
   /**
    * hash function
@@ -130,11 +150,12 @@ void* hashmap_get(hashmap_t* map, void* key);
     for (_hwp_util_i = 0; _hwp_util_i < map->nbins; _hwp_util_i++) { \
       darray_t* _hwp_util_k = map->keys[_hwp_util_i]; \
       darray_t* _hwp_util_v = map->values[_hwp_util_i]; \
-      for (_hwp_util_j = 0; _hwp_util_j < darray_size(_hwp_util_k); _hwp_util_j++) { \
-        ktype key = VOID_TO_TYPE(darray_get(_hwp_util_k, _hwp_util_j), ktype); \
-        vtype value = VOID_TO_TYPE(darray_get(_hwp_util_v, _hwp_util_j), vtype);
+      if (map->keys[_hwp_util_i]) { \
+        for (_hwp_util_j = 0; _hwp_util_j < darray_size(_hwp_util_k); _hwp_util_j++) { \
+          ktype key = VOID_TO_TYPE(darray_get(_hwp_util_k, _hwp_util_j), ktype); \
+          vtype value = VOID_TO_TYPE(darray_get(_hwp_util_v, _hwp_util_j), vtype);
 
-#define HASHMAP_ENDFOR } } }
+#define HASHMAP_ENDFOR } } } }
 
 #endif  // HWP_UTIL_MAP_H_
 

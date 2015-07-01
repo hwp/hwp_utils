@@ -20,15 +20,13 @@ hashmap_t* hashmap_alloc(size_t key_size, dup_f key_dup,
   ret->key_size = key_size;
   ret->value_size = value_size;
   ret->nbins = nbins;
-  ret->keys = malloc(ret->nbins * sizeof(darray_t*));
-  ret->values = malloc(ret->nbins * sizeof(darray_t*));
+  ret->keys = calloc(ret->nbins, sizeof(darray_t*));
+  ret->values = calloc(ret->nbins, sizeof(darray_t*));
+  ret->key_dup = key_dup;
+  ret->key_free = key_free;
+  ret->value_dup = value_dup;
+  ret->value_free = value_free;
   assert(ret->keys && ret->values);
-
-  size_t i;
-  for (i = 0; i < ret->nbins; i++) {
-    ret->keys[i] = darray_alloc(key_size, key_dup, key_free);
-    ret->values[i] = darray_alloc(value_size, value_dup, value_free);
-  }
 
   ret->size = 0;
   ret->hash = hash;
@@ -59,15 +57,21 @@ size_t hashmap_size(hashmap_t* map) {
 static void hashmap_search(hashmap_t* map, void* key, size_t* ibin, size_t* ielem, int* found) {
   *ibin = (size_t) map->hash(key, map->hash_param) % map->nbins;
   darray_t* kbin = map->keys[*ibin];
-  size_t bin_size = darray_size(kbin);
-  for (*ielem = 0; *ielem < bin_size; (*ielem)++) {
-    if (map->compar_key(darray_get(kbin, *ielem),
-          key, map->compar_param) == 0) {
-      break;
+  if (kbin) {
+    size_t bin_size = darray_size(kbin);
+    for (*ielem = 0; *ielem < bin_size; (*ielem)++) {
+      if (map->compar_key(darray_get(kbin, *ielem),
+            key, map->compar_param) == 0) {
+        break;
+      }
     }
-  }
 
-  *found = *ielem < bin_size;
+    *found = *ielem < bin_size;
+  }
+  else {
+    *ielem = 0;
+    *found = 0;
+  }
 }
 
 void hashmap_put(hashmap_t* map, void* key, void* value) {
@@ -80,6 +84,13 @@ void hashmap_put(hashmap_t* map, void* key, void* value) {
     darray_set(map->values[ibin], ielem, value);
   }
   else {            // new key, add
+    if (map->keys[ibin] == NULL) {
+      assert(map->values[ibin] == NULL);
+      map->keys[ibin] = darray_alloc(map->key_size,
+          map->key_dup, map->key_free);
+      map->values[ibin] = darray_alloc(map->value_size,
+          map->value_dup, map->value_free);
+    }
     darray_push_back(map->keys[ibin], key);
     darray_push_back(map->values[ibin], value);
     map->size++;
