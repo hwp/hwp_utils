@@ -26,6 +26,8 @@ darray_t* darray_alloc(size_t elem_size, dup_f elem_dup,
   list->size = 0;
   list->cap = 0;
   list->data = NULL;
+  list->buf = malloc(elem_size);
+  assert(list->buf);
 
   list->elem_dup = elem_dup;
   list->elem_free = elem_free;
@@ -44,6 +46,7 @@ void darray_free(darray_t* list) {
     }
 
     free(list->data);
+    free(list->buf);
     free(list);
   }
 }
@@ -105,5 +108,13 @@ void darray_set(darray_t* list, size_t index, void* elem) {
 void* darray_get(darray_t* list, size_t index) {
   assert(index >= 0 && index < list->size);
   return PTR_OFFSET(list->data, index * list->elem_size);
+}
+
+void darray_swap(darray_t* list, size_t i, size_t j) {
+  if (i != j) {
+    memcpy(list->buf, darray_get(list, i), list->elem_size);
+    memcpy(darray_get(list, i), darray_get(list, j), list->elem_size);
+    memcpy(darray_get(list, j), list->buf, list->elem_size);
+  }
 }
 

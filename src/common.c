@@ -11,13 +11,13 @@
 #include <assert.h>
 
 int compar_int(const void* a, const void* b, void* param) {
-  return VOID_TO_INT(b) - VOID_TO_INT(a);
+  return VOID_TO_INT(a) - VOID_TO_INT(b);
 }
 
 #define fsign(x) ((int)(((x) > 0.0) - ((x) < 0.0)))
 
 int compar_double(const void* a, const void* b, void* param) {
-  return fsign(VOID_TO_DOUBLE(b) - VOID_TO_DOUBLE(a));
+  return fsign(VOID_TO_DOUBLE(a) - VOID_TO_DOUBLE(b));
 }
 
 int compar_str(const void* a, const void* b, void* param) {
@@ -25,7 +25,7 @@ int compar_str(const void* a, const void* b, void* param) {
 }
 
 int compar_wchar(const void* a, const void* b, void* param) {
-  return VOID_TO_WCHAR(b) - VOID_TO_WCHAR(a);
+  return VOID_TO_WCHAR(a) - VOID_TO_WCHAR(b);
 }
 
 int compar_wcstr(const void* a, const void* b, void* param) {

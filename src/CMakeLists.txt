@@ -2,7 +2,7 @@
 # Copyright (c) 2014, All rights reserved.
 
 add_library(${PACKAGE} SHARED
-  common.c list.c map.c test.c debug.c)
+  common.c list.c map.c queue.c test.c debug.c)
 
 install(TARGETS ${PACKAGE}
   LIBRARY DESTINATION lib)

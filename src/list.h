@@ -36,6 +36,11 @@ typedef struct {
   void* data;
 
   /**
+   * buffer for one element
+   */
+  void* buf;
+
+  /**
    * function for duplicate element
    * only necessary when elements are pointers
    * and the data need to be duplicated when added 
@@ -92,16 +97,6 @@ size_t darray_size(darray_t* list);
 size_t darray_push_back(darray_t* list, void* elem);
 
 /**
- * add an unintialized element at the end
- *
- * @return the index of the new element
- * @warning if the element is pointer type, the user need
- *   to be aware of how memory is handled (using duplicate
- *   and free functions)
-size_t darray_increase_size(darray_t* list);
- */
-
-/**
  * get the and delete the element at the end
  */
 void* darray_pop_back(darray_t* list);
@@ -116,6 +111,11 @@ void darray_set(darray_t* list, size_t index, void* elem);
  * get an element by index
  */
 void* darray_get(darray_t* list, size_t index);
+
+/**
+ * swap elements by indices
+ */
+void darray_swap(darray_t* list, size_t i, size_t j);
 
 #endif
 
